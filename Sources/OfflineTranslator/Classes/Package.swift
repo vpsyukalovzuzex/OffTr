@@ -80,26 +80,22 @@ public class Package: Codable, Equatable {
                     destination: destination,
                     overwrite: true,
                     password: nil,
-                    progress: nil
-                ) { f in
-                    do {
-                        let fileManager = FileManager()
-                        let folders = try fileManager.contentsOfDirectory(atPath: temporary)
-                        for folder in folders {
-                            try fileManager.copyItem(
-                                atPath: temporary + "/" + folder,
-                                toPath: packages + "/" + folder
-                            )
-                        }
-                        try fileManager.removeItem(atPath: temporary)
-                        self.folders = folders
-                        installed.append(self)
-                        try UserDefaults.standard.set(installed, Package.key)
-                        block?(nil)
-                    } catch let error {
-                        block?(error)
-                    }
+                    progress: nil,
+                    fileOutputHandler: nil
+                )
+                let fileManager = FileManager()
+                let folders = try fileManager.contentsOfDirectory(atPath: temporary)
+                for folder in folders {
+                    try fileManager.copyItem(
+                        atPath: temporary + "/" + folder,
+                        toPath: packages + "/" + folder
+                    )
                 }
+                try fileManager.removeItem(atPath: temporary)
+                self.folders = folders
+                installed.append(self)
+                try UserDefaults.standard.set(installed, Package.key)
+                block?(nil)
             } catch let error {
                 block?(error)
             }
