@@ -86,7 +86,7 @@ public class Package: Codable, Equatable {
                 let fileManager = FileManager()
                 let folders = try fileManager.contentsOfDirectory(atPath: temporary)
                 for folder in folders {
-                    try fileManager.copyItem(
+                    try fileManager.moveItem(
                         atPath: temporary + "/" + folder,
                         toPath: packages + "/" + folder
                     )
@@ -146,6 +146,6 @@ public class Package: Codable, Equatable {
         else {
             return result
         }
-        return result && lhsFolders.elementsEqual(rhsFolders)
+        return result && lhsFolders.elementsEqual(rhsFolders) { $0 == $1 }
     }
 }
