@@ -51,8 +51,7 @@ public class Package: Codable, Equatable {
     // MARK: - Public func
     
     public func install(_ block: InstallBlock? = nil) throws {
-        var installed = Package.installed
-        guard installed.filter({ $0 == self }).isEmpty else {
+        guard Package.installed.filter({ $0 == self }).isEmpty else {
             throw PackageError.versionAlreadyInstalled
         }
         guard let path = Bundle.main.path(forResource: zip, ofType: "zip") else {
@@ -93,6 +92,7 @@ public class Package: Codable, Equatable {
                 }
                 try fileManager.removeItem(atPath: temporary)
                 self.folders = folders
+                var installed = Package.installed
                 installed.append(self)
                 try UserDefaults.standard.set(installed, Package.key)
                 block?(nil)
