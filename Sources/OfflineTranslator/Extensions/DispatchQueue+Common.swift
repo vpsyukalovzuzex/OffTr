@@ -6,5 +6,7 @@ import Foundation
 
 extension DispatchQueue {
     
-    static let package = DispatchQueue(label: "package", qos: .background)
+    // MARK: - Internal static let
+    
+    static let offlineTranslator = DispatchQueue(label: "offlineTranslator")
 }

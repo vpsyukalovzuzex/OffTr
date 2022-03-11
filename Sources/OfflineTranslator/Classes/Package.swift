@@ -46,10 +46,37 @@ public class Package: Codable,
     // MARK: - Public var
     
     public var code: String? {
-        if let result = folders?.filter { $0.hasSuffix("_en") }.first?.dropLast(3) {
+        if let result = folders?.filter { $0.hasSuffix("_\(String.englishCode)") }.first?.dropLast(3) {
             return String(result)
         }
         return nil
+    }
+    
+    public var isInstalled: Bool {
+        guard
+            let code = code,
+            let folders = folders,
+            let directory = String.directory
+        else {
+            return false
+        }
+        let fileManager = FileManager()
+        let files = [
+            code + ".spm.model",
+            "en.spm.model",
+            "model.bin",
+            "source_vocabulary.txt",
+            "target_vocabulary.txt"
+        ]
+        for folder in folders {
+            for file in files {
+                let path = directory + "/" + String.packages + "/" + folder + "/1/" + file
+                if !fileManager.fileExists(atPath: path) {
+                    return false
+                }
+            }
+        }
+        return true
     }
     
     // MARK: - Private var
@@ -75,7 +102,7 @@ public class Package: Codable,
     // MARK: - Public func
     
     public func install(_ block: InstallBlock? = nil) {
-        DispatchQueue.package.async { [weak self] in
+        DispatchQueue.offlineTranslator.async { [weak self] in
             guard let self = self else {
                 return
             }
@@ -133,7 +160,7 @@ public class Package: Codable,
     }
     
     public func uninstall(_ block: UninstallBlock? = nil) {
-        DispatchQueue.package.async { [weak self] in
+        DispatchQueue.offlineTranslator.async { [weak self] in
             guard let self = self else {
                 return
             }

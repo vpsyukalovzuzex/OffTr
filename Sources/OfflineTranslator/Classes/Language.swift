@@ -4,35 +4,57 @@
 
 import Foundation
 
-public class Language {
+public class Language: Equatable {
+    
+    // MARK: - Public static var
     
     public static var available: [Language] {
-        return Package.packages.compactMap {
-            if let code = $0.code {
+        var result = Package.packages.compactMap { package -> Language? in
+            if package.isInstalled, let code = package.code {
                 return Language(code: code)
             }
             return nil
         }
+        result.append(Language(code: String.englishCode))
+        return result
     }
+    
+    // MARK: - Public let
     
     public let code: String
     
-    public var languageToEnglishPath: String? {
-        return path(with: "\(code)_en")
+    // MARK: - Internal var
+    
+    var isEnglish: Bool {
+        return code == String.englishCode
     }
     
-    public var englishToLanguagePath: String? {
-        return path(with: "en_\(code)")
+    var languageToEnglishPath: String {
+        return path(with: "\(code)_\(String.englishCode)")
     }
+    
+    var englishToLanguagePath: String {
+        return path(with: "\(String.englishCode)_\(code)")
+    }
+    
+    // MARK: - Public init
     
     public init(code: String) {
         self.code = code
     }
     
-    private func path(with folder: String) -> String? {
+    // MARK: - Private func
+    
+    private func path(with folder: String) -> String {
         guard let directory = String.directory else {
-            return nil
+            return ""
         }
         return directory + "/" + String.packages + "/" + folder + "/1"
+    }
+    
+    // MARK: - Equatable
+    
+    public static func == (lhs: Language, rhs: Language) -> Bool {
+        return lhs.code == rhs.code
     }
 }
