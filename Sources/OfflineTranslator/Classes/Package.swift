@@ -45,17 +45,16 @@ public class Package: Codable,
     
     // MARK: - Public var
     
-    public var language: String? {
-        return folders?.filter { $0.hasSuffix("_en") }.first?.dropLast(3)
+    public var code: String? {
+        if let result = folders?.filter { $0.hasSuffix("_en") }.first?.dropLast(3) {
+            return String(result)
+        }
+        return nil
     }
     
     // MARK: - Private var
     
     private var folders: [String]?
-    
-    private var directory: String? {
-        return NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first
-    }
     
     // MARK: - CustomStringConvertible
     
@@ -90,11 +89,11 @@ public class Package: Codable,
                 guard let file = URL(string: path) else {
                     throw PackageError.wrongUrlString(path)
                 }
-                guard let directory = self.directory else {
+                guard let directory = String.directory else {
                     throw PackageError.canNotFindCachesDirectory
                 }
                 let uuid = UUID().uuidString
-                let packages = directory + "/Packages"
+                let packages = directory + "/" + String.packages
                 let temporary = packages + "/" + uuid
                 guard let destination = URL(string: temporary) else {
                     throw PackageError.wrongUrlString(temporary)
@@ -139,7 +138,7 @@ public class Package: Codable,
                 return
             }
             do {
-                guard let directory = self.directory else {
+                guard let directory = String.directory else {
                     throw PackageError.canNotFindCachesDirectory
                 }
                 guard let folders = self.folders else {
@@ -147,7 +146,7 @@ public class Package: Codable,
                 }
                 let fileManager = FileManager.default
                 for folder in folders {
-                    try? fileManager.removeItem(atPath: directory + "/Packages/" + folder)
+                    try? fileManager.removeItem(atPath: directory + "/" + String.packages + "/" + folder)
                 }
                 self.folders = nil
                 var installed = Package.installed
