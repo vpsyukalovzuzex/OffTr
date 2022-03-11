@@ -197,6 +197,6 @@ public class Package: Codable,
     }
     
     deinit {
-        print("deinit \(id)")
+        print("deinit \(id) \(Unmanaged.passUnretained(self).toOpaque())")
     }
 }
