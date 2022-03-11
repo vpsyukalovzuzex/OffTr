@@ -62,7 +62,7 @@ public class Package: Codable,
     
     // MARK: - Public func
     
-    public func install(_ block: InstallBlock? = nil) throws {
+    public func install(_ block: InstallBlock? = nil) {
         DispatchQueue.package.async { [weak self] in
             guard let self = self else {
                 return
