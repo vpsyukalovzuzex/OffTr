@@ -8,6 +8,14 @@
 		<data>
 		YOjZhJT9sMWOnGph19vgbAaeho4=
 		</data>
+		<key>Resources/liblingvanex_split.dylib</key>
+		<data>
+		6pUUfPYYS6O1RMmLj/RGSqqonmE=
+		</data>
+		<key>Resources/liblingvanex_translate.dylib</key>
+		<data>
+		6J1SPwmktslmuxoyF+SUIN4+a0g=
+		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
@@ -71,6 +79,28 @@
 			<key>hash2</key>
 			<data>
 			Td02lBuR8cqPnISQr9MAbeKZXy8TBSHd2i5TmeKk05k=
+			</data>
+		</dict>
+		<key>Resources/liblingvanex_split.dylib</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			6pUUfPYYS6O1RMmLj/RGSqqonmE=
+			</data>
+			<key>hash2</key>
+			<data>
+			tzOTDz/NouLGYQDzGcJ+lMf9IYaQugtdANLgkw1XGdc=
+			</data>
+		</dict>
+		<key>Resources/liblingvanex_translate.dylib</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			6J1SPwmktslmuxoyF+SUIN4+a0g=
+			</data>
+			<key>hash2</key>
+			<data>
+			puWTSxvRuxGU+P9aur8shfqOJN/JksZ0T0qRCddezEo=
 			</data>
 		</dict>
 	</dict>
