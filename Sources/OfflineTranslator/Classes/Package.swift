@@ -33,8 +33,6 @@ public class Package: Codable,
         return "installed"
     }
     
-    private static var temporary = [Package]()
-    
     // MARK: - Public let
     
     public let id: String
@@ -66,22 +64,9 @@ public class Package: Codable,
         self.folders = Package.installed.first { $0 == self }?.folders
     }
     
-    // MARK: - Private static func
-    
-    private static func append(_ package: Package) {
-        temporary.append(package)
-    }
-    
-    private static func remove(_ package: Package) {
-        if let index = temporary.firstIndex(of: package) {
-            temporary.remove(at: index)
-        }
-    }
-    
     // MARK: - Public func
     
     public func install(_ block: InstallBlock? = nil) {
-        Package.append(self)
         DispatchQueue.package.async { [weak self] in
             guard let self = self else {
                 return
@@ -133,16 +118,13 @@ public class Package: Codable,
                 installed.append(self)
                 try UserDefaults.standard.set(installed, Package.key)
                 block?(nil)
-                Package.remove(self)
             } catch let error {
                 block?(error)
-                Package.remove(self)
             }
         }
     }
     
     public func uninstall(_ block: UninstallBlock? = nil) {
-        Package.append(self)
         DispatchQueue.package.async { [weak self] in
             guard let self = self else {
                 return
@@ -168,7 +150,6 @@ public class Package: Codable,
                 Package.remove(self)
             }
             block?(nil)
-            Package.remove(self)
         }
     }
     
@@ -194,9 +175,5 @@ public class Package: Codable,
     
     public static func == (lhs: Package, rhs: Package) -> Bool {
         return lhs.id == rhs.id
-    }
-    
-    deinit {
-        print("deinit \(id) \(Unmanaged.passUnretained(self).toOpaque())")
     }
 }
