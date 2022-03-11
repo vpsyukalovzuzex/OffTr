@@ -70,14 +70,14 @@ public class Package: Codable,
     
     private static func append(_ package: Package) {
         temporary.append(package)
+        for a in temporary {
+            print("t \(Unmanaged.passUnretained(a).toOpaque())")
+        }
     }
     
     private static func remove(_ package: Package) {
         if let index = temporary.firstIndex(of: package) {
             temporary.remove(at: index)
-        }
-        for a in temporary {
-            print("t \(Unmanaged.passUnretained(a).toOpaque())")
         }
     }
     
