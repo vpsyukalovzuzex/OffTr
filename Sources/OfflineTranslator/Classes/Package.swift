@@ -5,7 +5,10 @@
 import Foundation
 import Zip
 
-public class Package: Codable, Equatable, Hashable {
+public class Package: Codable,
+                      Equatable,
+                      Hashable,
+                      CustomStringConvertible {
     
     // MARK: - Public typealia
     
@@ -42,6 +45,12 @@ public class Package: Codable, Equatable, Hashable {
     // MARK: - Private var
     
     private var folders: [String]?
+    
+    // MARK: - CustomStringConvertible
+    
+    public var description: String {
+        return "id: \(id); zip: \(zip); version: \(version); folders: \(folders);"
+    }
     
     // MARK: - Public init
     
