@@ -70,9 +70,6 @@ public class Package: Codable,
     
     private static func append(_ package: Package) {
         temporary.append(package)
-        for a in temporary {
-            print("t \(Unmanaged.passUnretained(a).toOpaque())")
-        }
     }
     
     private static func remove(_ package: Package) {
@@ -136,11 +133,10 @@ public class Package: Codable,
                 installed.append(self)
                 try UserDefaults.standard.set(installed, Package.key)
                 block?(nil)
-                Package.remove(self)
             } catch let error {
                 block?(error)
-                Package.remove(self)
             }
+            Package.remove(self)
         }
     }
     
@@ -166,11 +162,10 @@ public class Package: Codable,
                     installed.remove(at: index)
                     try UserDefaults.standard.set(installed, Package.key)
                 }
+                block?(nil)
             } catch let error {
                 block?(error)
-                Package.remove(self)
             }
-            block?(nil)
             Package.remove(self)
         }
     }
@@ -197,9 +192,5 @@ public class Package: Codable,
     
     public static func == (lhs: Package, rhs: Package) -> Bool {
         return lhs.id == rhs.id
-    }
-    
-    deinit {
-        print("deinit \(id) \(Unmanaged.passUnretained(self).toOpaque())")
     }
 }
