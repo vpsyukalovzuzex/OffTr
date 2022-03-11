@@ -76,6 +76,9 @@ public class Package: Codable,
         if let index = temporary.firstIndex(of: package) {
             temporary.remove(at: index)
         }
+        for a in temporary {
+            print("t \(Unmanaged.passUnretained(a).toOpaque())")
+        }
     }
     
     // MARK: - Public func
