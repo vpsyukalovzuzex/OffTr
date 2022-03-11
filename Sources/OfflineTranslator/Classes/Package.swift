@@ -43,6 +43,12 @@ public class Package: Codable,
     
     public let version: Int?
     
+    // MARK: - Public var
+    
+    public var language: String? {
+        return folders?.filter { $0.hasSuffix("_en") }.first?.dropLast(3)
+    }
+    
     // MARK: - Private var
     
     private var folders: [String]?
