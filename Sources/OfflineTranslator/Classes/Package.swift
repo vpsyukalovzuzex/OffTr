@@ -7,7 +7,6 @@ import Zip
 
 public class Package: Codable,
                       Equatable,
-                      Hashable,
                       CustomStringConvertible {
     
     // MARK: - Public typealia
@@ -36,7 +35,7 @@ public class Package: Codable,
     
     // MARK: - Public let
     
-    public let id: String
+    public var id: String
     
     public let zip: String
     
@@ -49,7 +48,7 @@ public class Package: Codable,
     // MARK: - CustomStringConvertible
     
     public var description: String {
-        return "id: \(id); zip: \(zip); version: \(version); folders: \(folders);"
+        return "id: \(id); zip: \(zip); version: \(version); folders: \(String(describing: folders));"
     }
     
     // MARK: - Public init
@@ -108,9 +107,11 @@ public class Package: Codable,
                 try fileManager.removeItem(atPath: temporary)
                 self.folders = folders
                 var installed = Package.installed
+                if let index = installed.firstIndex(where: { $0.id == self.id }) {
+                    installed.remove(at: index)
+                }
                 installed.append(self)
-                let unique = Array(Set(installed))
-                try UserDefaults.standard.set(unique, Package.key)
+                try UserDefaults.standard.set(installed, Package.key)
                 block?(nil)
             } catch let error {
                 block?(error)
@@ -158,12 +159,5 @@ public class Package: Codable,
     
     public static func == (lhs: Package, rhs: Package) -> Bool {
         return lhs.id == rhs.id && lhs.version == rhs.version
-    }
-    
-    // MARK: - Hashable
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-        hasher.combine(version)
     }
 }
