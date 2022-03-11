@@ -51,7 +51,7 @@ public class Package: Codable, Equatable {
     // MARK: - Public func
     
     public func install(_ block: InstallBlock? = nil) throws {
-        guard Package.installed.filter({ $0 == self }).isEmpty else {
+        guard Package.installed.firstIndex(of: self) == nil else {
             throw PackageError.versionAlreadyInstalled
         }
         guard let path = Bundle.main.path(forResource: zip, ofType: "zip") else {
