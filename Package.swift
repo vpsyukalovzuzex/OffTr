@@ -1,11 +1,10 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 
 import PackageDescription
 
 let package = Package(
     name: "OfflineTranslator",
     platforms: [
-        .iOS(.v9),
         .macOS(.v10_10)
     ],
     products: [
@@ -26,10 +25,13 @@ let package = Package(
         .target(
             name: "OfflineTranslator",
             dependencies: [
-                .product(
-                    name: "Zip"
-                )
+                "Zip",
+                "LingvanexCTranslate2"
             ]
+        ),
+        .binaryTarget(
+            name: "LingvanexCTranslate2",
+            path: "Frameworks/LingvanexCTranslate2.xcframework"
         )
     ]
 )

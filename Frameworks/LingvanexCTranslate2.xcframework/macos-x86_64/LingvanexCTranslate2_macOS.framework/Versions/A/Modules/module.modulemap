@@ -1,0 +1,6 @@
+framework module LingvanexCTranslate2_macOS {
+  umbrella header "LingvanexCTranslate2_macOS.h"
+
+  export *
+  module * { export * }
+}
