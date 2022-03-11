@@ -91,7 +91,11 @@ public class Package: Codable,
     
     // MARK: - Public init
     
-    public init(id: String, zip: String? = nil, version: Int? = nil) {
+    public init(
+        id: String,
+        zip: String? = nil,
+        version: Int? = nil
+    ) {
         self.id = id
         self.zip = zip
         self.version = version

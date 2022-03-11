@@ -6,6 +6,18 @@ import Foundation
 
 public extension String {
     
+    // MARK: - Public func
+    
+    func translate(
+        fromLanguage: Language,
+        toLanguage: Language,
+        _ block: @escaping OfflineTranslator.TranslateBlock
+    ) {
+        let offlineTranslator = OfflineTranslator.shared
+        offlineTranslator.setup(fromLanguage, toLanguage)
+        offlineTranslator.translate(self, block)
+    }
+    
     // MARK: - Internal static var
     
     internal static var directory: String? {
@@ -19,14 +31,4 @@ public extension String {
     internal static var englishCode: String {
         return "en"
     }
-    
-    func translate(
-        fromLanguage: Language,
-        toLanguage: Language,
-        _ block: @escaping TranslateBlock
-    ) {
-        let offlineTranslator = OfflineTranslator.shared
-//        offlineTranslator = 
-    }
 }
-
