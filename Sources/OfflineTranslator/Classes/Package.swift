@@ -5,7 +5,7 @@
 import Foundation
 import Zip
 
-public class Package: Codable, Equatable {
+public class Package: Codable, Equatable, Hashable {
     
     // MARK: - Public typealia
     
@@ -100,7 +100,8 @@ public class Package: Codable, Equatable {
                 self.folders = folders
                 var installed = Package.installed
                 installed.append(self)
-                try UserDefaults.standard.set(installed, Package.key)
+                let unique = Array(Set(installed))
+                try UserDefaults.standard.set(unique, Package.key)
                 block?(nil)
             } catch let error {
                 block?(error)
@@ -148,5 +149,12 @@ public class Package: Codable, Equatable {
     
     public static func == (lhs: Package, rhs: Package) -> Bool {
         return lhs.id == rhs.id && lhs.version == rhs.version
+    }
+    
+    // MARK: - Hashable
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(version)
     }
 }
