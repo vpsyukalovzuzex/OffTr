@@ -195,4 +195,8 @@ public class Package: Codable,
     public static func == (lhs: Package, rhs: Package) -> Bool {
         return lhs.id == rhs.id
     }
+    
+    deinit {
+        print("deinit \(id)")
+    }
 }
