@@ -112,7 +112,7 @@ public class Package: Codable,
                         toPath: toPath
                     )
                 }
-                try fileManager.removeItem(atPath: temporary)
+                try? fileManager.removeItem(atPath: temporary)
                 self.folders = folders
                 var installed = Package.installed
                 if let index = installed.firstIndex(of: self) {
@@ -141,8 +141,9 @@ public class Package: Codable,
                 }
                 let fileManager = FileManager.default
                 for folder in folders {
-                    try fileManager.removeItem(atPath: directory + "/Packages/" + folder)
+                    try? fileManager.removeItem(atPath: directory + "/Packages/" + folder)
                 }
+                self.folders = nil
                 var installed = Package.installed
                 if let index = installed.firstIndex(of: self) {
                     installed.remove(at: index)
