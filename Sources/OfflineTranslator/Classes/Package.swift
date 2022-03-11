@@ -147,7 +147,6 @@ public class Package: Codable,
                 }
             } catch let error {
                 block?(error)
-                Package.remove(self)
             }
             block?(nil)
         }
