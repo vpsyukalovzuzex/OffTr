@@ -9,7 +9,7 @@ public class Package: Codable,
                       Equatable,
                       CustomStringConvertible {
     
-    // MARK: - Public typealia
+    // MARK: - Public typealias
     
     public typealias InstallBlock = (Error?) -> Void
     public typealias UninstallBlock = (Error?) -> Void
@@ -80,7 +80,7 @@ public class Package: Codable,
         guard let destination = URL(string: temporary) else {
             throw PackageError.wrongUrlString(temporary)
         }
-        DispatchQueue.global(qos: .background).async { [weak self] in
+        DispatchQueue.package.async { [weak self] in
             guard let self = self else {
                 return
             }
@@ -126,14 +126,28 @@ public class Package: Codable,
         guard let folders = folders else {
             throw PackageError.foldersDoNotExist
         }
-        let fileManager = FileManager.default
-        for folder in folders {
-            try fileManager.removeItem(atPath: directory + "/Packages/" + folder)
-        }
-        var installed = Package.installed
-        if let index = installed.firstIndex(of: self) {
-            installed.remove(at: index)
-            try UserDefaults.standard.set(installed, Package.key)
+        DispatchQueue.package.async { [weak self] in
+            do {
+                guard let self = self else {
+                    return
+                }
+                let fileManager = FileManager.default
+                let auto = [
+                    self.id + "_en",
+                    "en_" + self.id
+                ]
+                for folder in folders ?? auto {
+                    try fileManager.removeItem(atPath: directory + "/Packages/" + folder)
+                }
+                var installed = Package.installed
+                if let index = installed.firstIndex(of: self) {
+                    installed.remove(at: index)
+                    try UserDefaults.standard.set(installed, Package.key)
+                }
+            } catch let error {
+                block?(error)
+            }
+            block?(nil)
         }
     }
     
