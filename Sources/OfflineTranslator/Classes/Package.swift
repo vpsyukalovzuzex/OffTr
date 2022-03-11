@@ -63,29 +63,29 @@ public class Package: Codable,
     // MARK: - Public func
     
     public func install(_ block: InstallBlock? = nil) throws {
-        guard Package.installed.firstIndex(of: self) == nil else {
-            throw PackageError.versionAlreadyInstalled
-        }
-        guard let path = Bundle.main.path(forResource: zip, ofType: "zip") else {
-            throw PackageError.canNotFindZip
-        }
-        guard let file = URL(string: path) else {
-            throw PackageError.wrongUrlString(path)
-        }
-        guard let directory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first else {
-            throw PackageError.canNotFindCachesDirectory
-        }
-        let uuid = UUID().uuidString
-        let packages = directory + "/Packages"
-        let temporary = packages + "/" + uuid
-        guard let destination = URL(string: temporary) else {
-            throw PackageError.wrongUrlString(temporary)
-        }
         DispatchQueue.package.async { [weak self] in
             guard let self = self else {
                 return
             }
             do {
+                guard Package.installed.firstIndex(of: self) == nil else {
+                    throw PackageError.versionAlreadyInstalled
+                }
+                guard let path = Bundle.main.path(forResource: zip, ofType: "zip") else {
+                    throw PackageError.canNotFindZip
+                }
+                guard let file = URL(string: path) else {
+                    throw PackageError.wrongUrlString(path)
+                }
+                guard let directory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first else {
+                    throw PackageError.canNotFindCachesDirectory
+                }
+                let uuid = UUID().uuidString
+                let packages = directory + "/Packages"
+                let temporary = packages + "/" + uuid
+                guard let destination = URL(string: temporary) else {
+                    throw PackageError.wrongUrlString(temporary)
+                }
                 try Zip.unzipFile(
                     file,
                     destination: destination,
@@ -120,17 +120,17 @@ public class Package: Codable,
         }
     }
     
-    public func uninstall(_ block: UninstallBlock? = nil) throws {
-        guard let directory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first else {
-            throw PackageError.canNotFindCachesDirectory
-        }
-        guard let folders = folders else {
-            throw PackageError.foldersDoNotExist
-        }
+    public func uninstall(_ block: UninstallBlock? = nil) {
         DispatchQueue.package.async { [weak self] in
+            guard let self = self else {
+                return
+            }
             do {
-                guard let self = self else {
-                    return
+                guard let directory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first else {
+                    throw PackageError.canNotFindCachesDirectory
+                }
+                guard let folders = folders else {
+                    throw PackageError.foldersDoNotExist
                 }
                 let fileManager = FileManager.default
                 for folder in folders {
