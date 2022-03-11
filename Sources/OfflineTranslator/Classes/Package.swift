@@ -71,7 +71,7 @@ public class Package: Codable,
                 guard Package.installed.firstIndex(of: self) == nil else {
                     throw PackageError.versionAlreadyInstalled
                 }
-                guard let path = Bundle.main.path(forResource: zip, ofType: "zip") else {
+                guard let path = Bundle.main.path(forResource: self.zip, ofType: "zip") else {
                     throw PackageError.canNotFindZip
                 }
                 guard let file = URL(string: path) else {
@@ -129,7 +129,7 @@ public class Package: Codable,
                 guard let directory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first else {
                     throw PackageError.canNotFindCachesDirectory
                 }
-                guard let folders = folders else {
+                guard let folders = self.folders else {
                     throw PackageError.foldersDoNotExist
                 }
                 let fileManager = FileManager.default
