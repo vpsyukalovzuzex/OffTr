@@ -57,6 +57,7 @@ public class Package: Codable,
         self.id = id
         self.zip = zip
         self.version = version
+        self.folders = Package.installed.first { $0 == self }?.folders
     }
     
     // MARK: - Public func
@@ -132,11 +133,7 @@ public class Package: Codable,
                     return
                 }
                 let fileManager = FileManager.default
-                let auto = [
-                    self.id + "_en",
-                    "en_" + self.id
-                ]
-                for folder in folders ?? auto {
+                for folder in folders {
                     try fileManager.removeItem(atPath: directory + "/Packages/" + folder)
                 }
                 var installed = Package.installed
