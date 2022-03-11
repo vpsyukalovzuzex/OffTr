@@ -88,9 +88,12 @@ public class Package: Codable, Equatable {
                 let fileManager = FileManager()
                 let folders = try fileManager.contentsOfDirectory(atPath: temporary)
                 for folder in folders {
+                    let atPath = temporary + "/" + folder
+                    let toPath = packages + "/" + folder
+                    try? fileManager.removeItem(atPath: toPath)
                     try fileManager.moveItem(
-                        atPath: temporary + "/" + folder,
-                        toPath: packages + "/" + folder
+                        atPath: atPath,
+                        toPath: toPath
                     )
                 }
                 try fileManager.removeItem(atPath: temporary)
