@@ -21,11 +21,9 @@ public class Package: Codable,
         case id, zip, version, folders
     }
     
-    // MARK: - Public static var
+    // MARK: - Public private(set) static var
     
-    public static var installed: [Package] {
-        return (try? UserDefaults.standard.get([Package].self, key)) ?? []
-    }
+    public private(set) static var packages = [Package]()
     
     // MARK: - Private static var
     
@@ -33,7 +31,9 @@ public class Package: Codable,
         return "installed"
     }
     
-    private static var temporary = [Package]()
+    private static var installed: [Package] {
+        return (try? UserDefaults.standard.get([Package].self, key)) ?? []
+    }
     
     // MARK: - Public let
     
@@ -64,24 +64,12 @@ public class Package: Codable,
         self.zip = zip
         self.version = version
         self.folders = Package.installed.first { $0 == self }?.folders
-    }
-    
-    // MARK: - Private static func
-    
-    private static func append(_ package: Package) {
-        temporary.append(package)
-    }
-    
-    private static func remove(_ package: Package) {
-        if let index = temporary.firstIndex(of: package) {
-            temporary.remove(at: index)
-        }
+        Package.packages.append(self)
     }
     
     // MARK: - Public func
     
     public func install(_ block: InstallBlock? = nil) {
-        Package.append(self)
         DispatchQueue.package.async { [weak self] in
             guard let self = self else {
                 return
@@ -136,12 +124,10 @@ public class Package: Codable,
             } catch let error {
                 block?(error)
             }
-            Package.remove(self)
         }
     }
     
     public func uninstall(_ block: UninstallBlock? = nil) {
-        Package.append(self)
         DispatchQueue.package.async { [weak self] in
             guard let self = self else {
                 return
@@ -166,7 +152,6 @@ public class Package: Codable,
             } catch let error {
                 block?(error)
             }
-            Package.remove(self)
         }
     }
     
