@@ -16,7 +16,7 @@ public class Package: Codable, Equatable {
     
     private enum Key: CodingKey {
         
-        case zip, version, folders
+        case id, zip, version, folders
     }
     
     // MARK: - Public static var
@@ -33,6 +33,8 @@ public class Package: Codable, Equatable {
     
     // MARK: - Public let
     
+    public let id: String
+    
     public let zip: String
     
     public let version: Int
@@ -40,10 +42,11 @@ public class Package: Codable, Equatable {
     // MARK: - Private var
     
     private var folders: [String]?
-        
+    
     // MARK: - Public init
     
-    public init(zip: String, version: Int) {
+    public init(id: String, zip: String, version: Int) {
+        self.id = id
         self.zip = zip
         self.version = version
     }
@@ -124,6 +127,7 @@ public class Package: Codable, Equatable {
     
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: Key.self)
+        self.id = try container.decode(String.self, forKey: .id)
         self.zip = try container.decode(String.self, forKey: .zip)
         self.version = try container.decode(Int.self, forKey: .version)
         self.folders = try container.decode([String]?.self, forKey: .folders)
@@ -131,6 +135,7 @@ public class Package: Codable, Equatable {
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: Key.self)
+        try container.encode(id, forKey: .id)
         try container.encode(zip, forKey: .zip)
         try container.encode(version, forKey: .version)
         try container.encode(folders, forKey: .folders)
@@ -139,13 +144,6 @@ public class Package: Codable, Equatable {
     // MARK: - Equatable
     
     public static func == (lhs: Package, rhs: Package) -> Bool {
-        let result = lhs.version == rhs.version
-        guard
-            let lhsFolders = lhs.folders,
-            let rhsFolders = rhs.folders
-        else {
-            return result
-        }
-        return result && lhsFolders.elementsEqual(rhsFolders) { $0 == $1 }
+        return lhs.id == rhs.id && lhs.version == rhs.version
     }
 }
