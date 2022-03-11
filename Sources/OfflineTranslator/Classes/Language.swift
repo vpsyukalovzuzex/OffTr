@@ -17,11 +17,11 @@ public class Language {
     
     public let code: String
     
-    var languageToEnglishPath: String? {
+    public var languageToEnglishPath: String? {
         return path(with: "\(code)_en")
     }
     
-    var englishToLanguagePath: String? {
+    public var englishToLanguagePath: String? {
         return path(with: "en_\(code)")
     }
     
