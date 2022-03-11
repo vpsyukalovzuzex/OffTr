@@ -35,25 +35,29 @@ public class Package: Codable,
     
     // MARK: - Public let
     
-    public var id: String
+    public let id: String
     
-    public let zip: String
+    public let zip: String?
     
-    public let version: Int
+    public let version: Int?
     
     // MARK: - Private var
     
     private var folders: [String]?
     
+    private var directory: String? {
+        return NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first
+    }
+    
     // MARK: - CustomStringConvertible
     
     public var description: String {
-        return "id: \(id); zip: \(zip); version: \(version); folders: \(String(describing: folders));"
+        return "id: \(id); zip: \(String(describing: zip)); version: \(String(describing: version)); folders: \(String(describing: folders));"
     }
     
     // MARK: - Public init
     
-    public init(id: String, zip: String, version: Int) {
+    public init(id: String, zip: String? = nil, version: Int? = nil) {
         self.id = id
         self.zip = zip
         self.version = version
@@ -68,7 +72,7 @@ public class Package: Codable,
                 return
             }
             do {
-                guard Package.installed.firstIndex(of: self) == nil else {
+                guard Package.installed.firstIndex(where: { $0 == self && $0.version == self.version }) == nil else {
                     throw PackageError.versionAlreadyInstalled
                 }
                 guard let path = Bundle.main.path(forResource: self.zip, ofType: "zip") else {
@@ -77,7 +81,7 @@ public class Package: Codable,
                 guard let file = URL(string: path) else {
                     throw PackageError.wrongUrlString(path)
                 }
-                guard let directory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first else {
+                guard let directory = self.directory else {
                     throw PackageError.canNotFindCachesDirectory
                 }
                 let uuid = UUID().uuidString
@@ -108,7 +112,7 @@ public class Package: Codable,
                 try fileManager.removeItem(atPath: temporary)
                 self.folders = folders
                 var installed = Package.installed
-                if let index = installed.firstIndex(where: { $0.id == self.id }) {
+                if let index = installed.firstIndex(of: self) {
                     installed.remove(at: index)
                 }
                 installed.append(self)
@@ -126,7 +130,7 @@ public class Package: Codable,
                 return
             }
             do {
-                guard let directory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first else {
+                guard let directory = self.directory else {
                     throw PackageError.canNotFindCachesDirectory
                 }
                 guard let folders = self.folders else {
@@ -153,8 +157,8 @@ public class Package: Codable,
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: Key.self)
         self.id = try container.decode(String.self, forKey: .id)
-        self.zip = try container.decode(String.self, forKey: .zip)
-        self.version = try container.decode(Int.self, forKey: .version)
+        self.zip = try container.decode(String?.self, forKey: .zip)
+        self.version = try container.decode(Int?.self, forKey: .version)
         self.folders = try container.decode([String]?.self, forKey: .folders)
     }
     
@@ -169,6 +173,6 @@ public class Package: Codable,
     // MARK: - Equatable
     
     public static func == (lhs: Package, rhs: Package) -> Bool {
-        return lhs.id == rhs.id && lhs.version == rhs.version
+        return lhs.id == rhs.id
     }
 }
